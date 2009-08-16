@@ -1,0 +1,4 @@
+* Add custom mnagers
+* Don't allow recursive parent relations
+* Add template tags like django-tagging
+* Provide a graph structure of categories

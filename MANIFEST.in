@@ -1,0 +1,5 @@
+include README
+include TODO
+include AUTHORS
+include COPYING.LESSER
+include MANIFEST.in
