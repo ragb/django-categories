@@ -1,0 +1,69 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-08-17 00:46+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: models.py:10
+msgid "name"
+msgstr "nome"
+
+#: models.py:11
+msgid "Name of the Category"
+msgstr "Nome da Categoria"
+
+#: models.py:12
+msgid "slug"
+msgstr "slug"
+
+#: models.py:13
+msgid "Slug, normally used in URLs"
+msgstr "Slug, normalmente usado em URLs"
+
+#: models.py:14
+msgid "description"
+msgstr "Descrição"
+
+#: models.py:14
+msgid "Description of this category"
+msgstr "Descrição desta Categoria"
+
+#: models.py:16
+msgid "Parent category of this category, leave blank for a top category"
+msgstr "Categoria pai desta categoria, deixe em branco para uma Categoria de topo"
+
+#: models.py:19
+msgid "Category"
+msgstr "Categoria"
+
+#: models.py:20
+msgid "Categories"
+msgstr "Categorias"
+
+#: models.py:26
+msgid "category"
+msgstr "Categoria"
+
+#: models.py:26
+msgid "items"
+msgstr "items"
+
+#: models.py:35
+msgid "Categorized item"
+msgstr "item categorizado"
+
+#: models.py:36
+msgid "Categorized items"
+msgstr "Items categorizados"
