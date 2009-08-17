@@ -23,7 +23,7 @@ class Category(models.Model):
         return self.name
 
 class CategorizedItem(models.Model):
-    category = models.ForeignKey(Category, verbose_name=_("category"), related_name=_("items"))
+    category = models.ForeignKey(Category, verbose_name=_("category"), related_name="items")
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     object = generic.GenericForeignKey('content_type', 'object_id')
