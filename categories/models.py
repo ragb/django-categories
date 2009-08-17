@@ -12,7 +12,7 @@ class Category(models.Model):
     slug = models.SlugField(_("slug"), unique=True,
         help_text=_("Slug, normally used in URLs"))
     description = models.TextField(_("description"), help_text=_("Description of this category"))
-    parent = models.ForeignKey('self', null=True, blank=True,
+    parent = models.ForeignKey('self', null=True, blank=True, related_name="subcategories",
         help_text=_("Parent category of this category, leave blank for a top category"))
 
     class Meta:
