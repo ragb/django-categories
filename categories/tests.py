@@ -15,9 +15,19 @@ class SimpleTest(TestCase):
         self.failUnlessEqual(1 + 1, 2)
 
 __test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
 
->>> 1 + 1 == 2
+
+>>> from categories.models import Category, CategorizedItem
+>>> from django.contenttypes.models import ContentType
+>>> c1 = Category.objects.create(name="c1", slug="c1")
+>>> c2 = Category.objects.create(name="c2", slug="c2")
+>>> Category.objects.update_categories(c1, Category.objects.all())
+>>> ctype = ContentType.objects.get_for_model(Category)
+>>> c1 in Category.objects.filter(items__object_id=c2.id, items__content_type=ctype)
 True
+>>> c1 in Category.objects.filter(items__object_id=c1.id, items__content_type=ctype)
+True
+
+
 """}
 
