@@ -11,6 +11,22 @@ from django.utils.translation import ugettext_lazy as _
 class CategoryManager(models.Manager):
     """ custom manager for categories """
 
+    def update_categories(self, obj, categories):
+        """ updates the categories for the given object """
+        ctype = ContentType.get_for_model(obj)
+        current_categorized_items = CategorizedItem.objects.filter(countent_type_pk=ctype_pk, object_id=obj.id)
+        
+        # delete CategorizedItems not present in categories
+        current_categorized_items.exclude(category_in=categories).delete()
+        
+        # Find what categories to add
+        # FIXME: is there any optimized query for this?
+        categories_to_add = self.exclude(items__in=current_categorized_items).filter(id=[c.id for c in categories])
+        
+        # create categorized items  for this
+        for c in categories_to_add:
+            CategorizedItem.objects.create(category=c, object=obj)
+
     def get_top_categories(self):
         """
         Returns the top categories
