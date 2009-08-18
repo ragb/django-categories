@@ -38,13 +38,13 @@ class CategoryManager(models.Manager):
     def get_for_object(self, obj):
         """ Returns all categories associated with the given object """
         ctype = ContentType.objects.get_for_model(obj)
-        return self.filter(items__content_type_pk=ctype.pk,
+        return self.filter(items__content_type=ctype,
             items__object_id=obj.pk)
 
     def get_for_model(self, model):
         """ Returns all categories associated with instances of the given model """
         ctype = ContentType.objects.get_for_model(model)
-        return self.filter(items__content_type_pk=ctype.pk).distinct()
+        return self.filter(items__content_type=ctype).distinct()
 
 
 #
