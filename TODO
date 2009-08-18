@@ -1,4 +1,7 @@
-* Add custom mnagers
+* Add custom mnagers: done
 * Don't allow recursive parent relations
 * Add template tags like django-tagging
 * Provide a graph structure of categories
+* Add generic views
+* Add CategoriesField
+* Add widgets for admin

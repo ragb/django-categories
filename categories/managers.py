@@ -14,4 +14,7 @@ class ModelCategoryManager(models.Manager):
     def get_query_set(self):
         return Category.objects.get_for_model(self.model)
 
+    def get_top_categories(self):
+        return self.filter(parent__isnull=True)
+
 
