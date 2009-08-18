@@ -18,3 +18,19 @@ class ModelCategoryManager(models.Manager):
         return self.filter(parent__isnull=True)
 
 
+class CategoryDescriptor(object):
+    """ Simple descriptor to add basic category get and set to models """
+
+    def __get__(self, instance, owner):
+        if instance is None:
+            categories = ModelCategoryManager()
+            categories.model = owner
+        else:
+            categories = Category.objects.get_for_object(instance)
+        return categories
+
+    def __set__(self, instance, value):
+        Category.objects.update_category(instance, value)
+
+    def __delete__(self, instance):
+        Category.objects.update_categories(instance, [])
