@@ -15,7 +15,9 @@ class ModelCategoryManager(models.Manager):
         return Category.objects.get_for_model(self.model)
 
     def get_top_categories(self):
-        return self.filter(parent__isnull=True)
+        ctype = ContentType.get_for_model(self.model)
+        return Category.tree.get_root_nodes().filter(items__content_type=ctype)
+
 
 
 class CategoryDescriptor(object):

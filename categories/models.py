@@ -4,6 +4,8 @@ from django.contrib.contenttypes import generic
 
 from django.utils.translation import ugettext_lazy as _
 
+import mptt
+
 #
 # Managers
 #
@@ -33,7 +35,7 @@ class CategoryManager(models.Manager):
         
         Top categories are all categories with no parent
         """
-        return self.filter(parent__isnull=True)
+        return Category.tree.root_nodes()
 
     def get_for_object(self, obj):
         """ Returns all categories associated with the given object """
@@ -44,8 +46,14 @@ class CategoryManager(models.Manager):
     def get_for_model(self, model):
         """ Returns all categories associated with instances of the given model """
         ctype = ContentType.objects.get_for_model(model)
-        return self.filter(items__content_type=ctype).distinct()
+        return Category.objects.filter(items__content_type=ctype).distinct()
 
+    def get_tree_for_model(self, model, comulative=True):
+        ctype = ContentType.objects.get_for_model(model)
+        categories = Category.tree.all()
+        Category.tree.add_related_count(categories, CategorizedItem, 'category', 'num_entries', comulative)
+        categories = categories.filter(items__content_type=ctype)
+        return categories
 
 #
 # models
@@ -53,35 +61,24 @@ class CategoryManager(models.Manager):
 
 class Category(models.Model):
     """ A category for items """
-    name = models.CharField(_("name"), max_length=50,
+    name = models.CharField(_("name"), max_length=50, unique=True,
         help_text=_("Name of the Category"))
     slug = models.SlugField(_("slug"), unique=True,
         help_text=_("Slug, normally used in URLs"))
     description = models.TextField(_("description"), help_text=_("Description of this category"))
-    parent = models.ForeignKey('self', null=True, blank=True, related_name="subcategories",
+    parent = models.ForeignKey('self', null=True, blank=True, related_name="children",
         help_text=_("Parent category of this category, leave blank for a top category"))
     objects = CategoryManager()
 
     class Meta:
+        ordering =  ['name']
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")
 
     def __unicode__(self):
         return self.name
 
-    def get_ancestors(self):
-        """
-        returns a list with the ancestors of this category
-        
-        the returned list iis ordered from the parent of this category to a root category
-        """
-        ancestors = []
-        parent = self.parent
-        while parent is not None:
-            ancestors.append(parent)
-            parent = parent.parent
-        return ancestors
-
+mptt.register(Category, order_insertion_by=['name'])
 
 class CategorizedItem(models.Model):
     category = models.ForeignKey(Category, verbose_name=_("category"), related_name="items")
