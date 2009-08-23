@@ -1,7 +1,20 @@
-* Add custom mnagers: done
-* Don't allow recursive parent relations
-* Add template tags like django-tagging
-* Provide a graph structure of categories
-* Add generic views
-* Add CategoriesField
-* Add widgets for admin
+0.1
+
+1. Custom fields for selecting categories: one and multiple
+
+2. Admin interface to edit categories:
+
+* Custom parent/child handling in save
+* no treebird fields
+
+Depends: #1
+
+3. Database field to handle generic relations (like tagging.TagField)
+
+4. TemplateTags
+
+* Get_categories_for_object
+* Get_category_tree
+* Get_categories_for_model
+
+
