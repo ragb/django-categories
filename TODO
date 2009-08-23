@@ -18,3 +18,13 @@ Depends: #1
 * Get_categories_for_model
 
 
+0.2
+
+5. Write documentation
+
+6. Add trees, and counts restricted to some model
+* Comulative and none-comulative queries
+
+7. Template tags for trees to some model
+
+depends: #6 #4
