@@ -2,20 +2,31 @@
 
 1. Custom fields for selecting categories: one and multiple
 
+implementation: done
+testing: missing unit tests, integration with forms working fine
+
 2. Admin interface to edit categories:
 
 * Custom parent/child handling in save
 * no treebird fields
 
 Depends: #1
+implementation: done
+testing: unit tests done not passing update test
 
 3. Database field to handle generic relations (like tagging.TagField)
+
+implementation: none
+Testing: none
 
 4. TemplateTags
 
 * Get_categories_for_object
 * Get_category_tree
 * Get_categories_for_model
+
+implementation: none
+testing: none
 
 
 0.2
