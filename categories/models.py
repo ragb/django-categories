@@ -48,13 +48,15 @@ class Category(MP_Node):
         help_text=_("Name of the Category"))
     slug = models.SlugField(_("slug"), unique=True,
         help_text=_("Slug, normally used in URLs"))
-    description = models.TextField(_("description"), help_text=_("Description of this category"))
+    description = models.TextField(_("description"), blank=True, help_text=_("Description of this category"))
     objects = CategoryManager()
+    node_order_by = 'name'
 
     class Meta:
         ordering =  ['name']
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")
+
 
     def __unicode__(self):
         return self.name

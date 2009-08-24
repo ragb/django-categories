@@ -14,20 +14,36 @@ class SimpleTest(TestCase):
         """
         self.failUnlessEqual(1 + 1, 2)
 
-__test__ = {"doctest": """
+__test__ = {"formtest": """
 
 
->>> from categories.models import Category, CategorizedItem
->>> from django.contenttypes.models import ContentType
->>> c1 = Category.objects.create(name="c1", slug="c1")
->>> c2 = Category.objects.create(name="c2", slug="c2")
->>> Category.objects.update_categories(c1, Category.objects.all())
->>> ctype = ContentType.objects.get_for_model(Category)
->>> c1 in Category.objects.filter(items__object_id=c2.id, items__content_type=ctype)
+>>> from categories.models import Category
+>>> from categories.forms import CategoryModelForm
+>>> data = {'name' : 'c1', 'slug' : 'c1'}
+>>> f = CategoryModelForm(data)
+>>> f.is_valid()
 True
->>> c1 in Category.objects.filter(items__object_id=c1.id, items__content_type=ctype)
+>>> c1 = f.save()
+>>> data = {'name' : 'c2', 'slug' : 'c2', 'parent_field' : c1.id}
+>>> f = CategoryModelForm(data)
+>>> f.is_valid()
 True
-
-
+>>> c2 = f.save()
+>>> c2.get_parent() == c1
+True
+>>> data = {'name' : 'c3', 'slug' : 'c3', 'parent_field' : c1.id}
+>>> f = CategoryModelForm(data)
+>>> f.is_valid()
+True
+>>> c3 = f.save()
+>>> data = {'name' : 'c3', 'slug' : 'c3', 'parent_field' : c2.id}
+>>> f = CategoryModelForm(data, instance=c3)
+>>> f.is_valid()
+True
+>>> c3_2 = f.save()
+>>>
 """}
+
+
+
 

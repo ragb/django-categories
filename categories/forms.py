@@ -1,6 +1,8 @@
 from django import forms
-
+from django.db import transaction
+from django.db.models import Q
 from django.utils.encoding import smart_unicode
+from django.utils.translation import ugettext as _
 
 from categories.models import Category
 
@@ -40,18 +42,56 @@ class CategoryMultipleChoiceField(forms.MultipleChoiceField):
 class CategoryModelForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['name', 'description', 'slug']
+        fields = ['name', 'slug', 'description']
 
-    parent = CategoryChoiceField()
+    parent_field = CategoryChoiceField(empty_label=_("Root Node"), required=False)
 
     def __init__(self, *args, **kwargs):
-        super(forms.ModelForm, self).__init(*args, **kwargs)
+        super(forms.ModelForm, self).__init__(*args, **kwargs)
         if 'instance' in kwargs.keys():
-            instance = kwargs.get('instnace')
+            instance = kwargs.get('instance')
             
             # set parent queryset to exclude descendants
             descendants = instance.get_descendants()
-        qs = Category.objects.exclude(pk__in=descendants.values('pk'))
-        self['parent'].queryset = qs
+            qs = Category.objects.exclude(Q(pk__in=descendants.values('pk')) | Q(pk=instance.pk))
+            self.fields['parent'].queryset = qs
 
+    def save(self, commit=True):
+        parent = self.cleaned_data['parent_field']
+        if self.instance.pk is not None:
+            super(CategoryModelForm, self).save(commit=Commit)
+            self._update_parent(parent)
+        else:
+            self._create_node(parent)
+            # We does not save the m2m callback so create a idiot one
+            self.save_m2m = lambda : None
 
+        if commit:
+            transaction.commit_unless_managed()
+        return self.instance
+
+    def _create_node(self, parent):
+        keys = ['name', 'description', 'slug']
+        data = {}
+        for key in keys:
+            data[key] = self.cleaned_data[key]
+        if parent is None: # reate a root node
+            root = Category.get_first_root_node()
+            if root:
+                self.instance = root.add_sibling(pos='sorted-sibling', **data)
+            else:
+                self.instance = Category.add_root(**data)
+        else:
+            child = parent.get_first_child()
+            if child:
+                self.instance = child.add_sibling(pos='sorted-sibling', **data)
+            else:
+                self.instance = parent.add_child(**data)
+
+    def _update_parent(self, parent):
+        if self.instance.get_parent() == parent:
+            return
+        if parent is None: # transform this on a root node
+            self.instance.move(Category.get_first_root_node(), pos='sorted-sibling')
+        else:
+            self.instance.move(parent, pos='sorted-child')
